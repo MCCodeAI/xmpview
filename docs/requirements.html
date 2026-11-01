@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mac 图片元数据查看与编辑工具 · 需求文档</title>
+<style>
+:root{color-scheme:light;--ink:#182538;--muted:#64748b;--line:#e2e8f0;--accent:#2563eb;--bg:#f5f7fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:15px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}main{max-width:920px;margin:42px auto;padding:44px 54px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 36px #1e293b0a}h1{font-size:29px;line-height:1.35;margin:0 0 8px}h2{font-size:19px;margin:32px 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:16px;margin:19px 0 6px}p{margin:8px 0 13px}.subtitle{color:var(--muted)}.badge{display:inline-block;padding:3px 10px;background:#eff6ff;color:#1d4ed8;border-radius:20px;font-size:12px;font-weight:600}.callout{background:#f1f5f9;border-left:3px solid var(--accent);padding:13px 16px;border-radius:6px;margin:20px 0}table{width:100%;border-collapse:collapse;margin:13px 0 20px;font-size:14px}th,td{padding:10px 12px;border:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f8fafc}ul,ol{padding-left:24px;margin:8px 0 14px}li{margin:4px 0}code{background:#f1f5f9;padding:2px 5px;border-radius:4px;font-size:13px}.wire{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:18px;font-family:inherit;line-height:1.9}.footer{color:var(--muted);font-size:12px;margin-top:36px;border-top:1px solid var(--line);padding-top:12px}@media(max-width:650px){main{margin:0;padding:24px 18px;border-radius:0}table{font-size:12px}th,td{padding:7px}}@media print{body{background:white}main{margin:0;padding:0;border:0;box-shadow:none}}
+</style>
+</head>
+<body><main>
+<span class="badge">MVP · 需求草案 v1.0</span>
+<h1>Mac 图片元数据查看与编辑工具</h1>
+<p class="subtitle">轻量级原生 macOS 应用 · 产品需求文档（PRD） · 2026-11-01</p>
+<div class="callout"><strong>一句话目标：</strong>在 Mac 上快速打开图片，直观查看和修改其标准元数据，重点支持 XMP 标题、描述和关键词，并尽可能将修改保存在图片文件内部。</div>
+<h2>1. 项目背景与目标</h2>
+<p>macOS Finder 的 Comments、Apple Photos 的 Caption 与图片文件中的 XMP 是不同的元数据机制。用户希望无需命令行或大型图片管理软件，就能直接查看和编辑图片文件自身携带的 XMP 等信息。</p>
+<p><strong>第一版定位：</strong>独立、轻量、离线的单机工具；不开发照片管理系统，不接入 iCloud，不集成 AI。</p>
+<h2>2. 使用场景</h2>
+<ol><li>从 Finder 拖入一张 PNG、JPEG 或 HEIC 图片，查看图片及其元数据。</li><li>查看是否存在 XMP，以及具体包含哪些字段。</li><li>编辑 Title、Description、Keywords 并保存。</li><li>重新打开文件，确认元数据确实保存成功。</li></ol>
+<h2>3. MVP 功能需求</h2>
+<table><thead><tr><th>模块</th><th>基本需求</th><th>优先级</th></tr></thead><tbody>
+<tr><td>打开图片</td><td>文件选择器与拖放；支持 PNG、JPEG，HEIC 尽可能支持</td><td>P0</td></tr>
+<tr><td>图片预览</td><td>显示缩略预览、文件名、格式、尺寸</td><td>P0</td></tr>
+<tr><td>基础编辑</td><td>查看和编辑 Title、Description、Keywords</td><td>P0</td></tr>
+<tr><td>元数据浏览</td><td>按 XMP、EXIF、IPTC 分类显示可读取字段及其值</td><td>P0</td></tr>
+<tr><td>保存与验证</td><td>写入支持的标准元数据；保存后重新读取并提示结果</td><td>P0</td></tr>
+<tr><td>原始 XMP</td><td>显示可读取的原始 XMP XML（只读）</td><td>P1</td></tr>
+<tr><td>Finder Comments</td><td>可选只读显示，明确标注为 macOS 文件注释而非嵌入式 XMP</td><td>P1</td></tr>
+</tbody></table>
+<h2>4. 界面建议</h2>
+<div class="wire"><strong>Photo Metadata</strong>　　[打开图片] [保存]<hr>
+<table><tr><td style="width:42%;text-align:center;vertical-align:middle">图片预览区域</td><td>文件：example.png<br>尺寸：3024 × 4032<br><br><strong>Title</strong><br>［文本输入框］<br><strong>Description</strong><br>［多行文本框］<br><strong>Keywords</strong><br>［逗号分隔的关键词］</td></tr></table>
+[ Basic ]　[ XMP ]　[ EXIF ]　[ IPTC ]<br><small>状态：未修改 / 已修改 / 已保存 / 不支持写入</small></div>
+<p>使用单窗口布局，不设置图库、相册、账号、同步或复杂偏好设置。</p>
+<h2>5. 元数据规则</h2>
+<table><thead><tr><th>界面字段</th><th>优先采用的标准字段</th><th>说明</th></tr></thead><tbody>
+<tr><td>Title</td><td><code>XMP-dc:Title</code></td><td>图片标题</td></tr>
+<tr><td>Description</td><td><code>XMP-dc:Description</code></td><td>图片自然语言描述</td></tr>
+<tr><td>Keywords</td><td><code>XMP-dc:Subject</code></td><td>多个关键词；保存为多值结构</td></tr>
+</tbody></table>
+<ul><li>默认不修改拍摄时间、GPS、相机信息及其他未编辑字段。</li><li>优先嵌入图片内部；若格式或系统接口无法安全写入，应明确提示，不得假装保存成功。</li><li>保存前保留原文件备份，或提供“另存为”以降低损坏风险。</li><li>保存后重新解析文件并核对编辑字段。</li><li>不同格式的 XMP 写入能力必须分别验证；不能将 JPEG 的行为直接推断到 PNG、HEIC。</li></ul>
+<h2>6. 技术方案（初步）</h2>
+<table><thead><tr><th>部分</th><th>建议</th></tr></thead><tbody>
+<tr><td>开发语言</td><td>Swift</td></tr>
+<tr><td>用户界面</td><td>SwiftUI</td></tr>
+<tr><td>图片读取</td><td>macOS ImageIO / Core Graphics</td></tr>
+<tr><td>XMP 读取</td><td>优先使用 <code>CGImageMetadata</code> 等系统接口</td></tr>
+<tr><td>元数据写入</td><td>评估 <code>CGImageDestination</code> 的格式支持；对不可靠的格式保守处理</td></tr>
+<tr><td>交付形式</td><td>本地独立 <code>.app</code>，不需要账号或后台服务</td></tr>
+</tbody></table>
+<p><strong>技术验证重点：</strong>在实际样本上测试 PNG、JPEG、HEIC 的 XMP 读取、写入及保留原有元数据的能力。若 macOS 原生接口无法可靠满足需求，再评估引入小型元数据处理组件，而非一开始就增加大型依赖。</p>
+<h2>7. 明确不包含的功能</h2>
+<ul><li>AI 图片识别与自动描述</li><li>iCloud Photos 读取、回写或同步</li><li>批量处理、图库管理和全文搜索</li><li>NAS、数据库、云服务或账号系统</li><li>Finder Quick Action、Windows / iPhone 版本</li></ul>
+<h2>8. 验收标准</h2>
+<ol><li>应用可在 Mac 上独立启动，支持拖入图片。</li><li>能清楚区分“文件没有 XMP”和“该格式/接口无法读取 XMP”。</li><li>能查看支持格式的 XMP 字段，并编辑三个基础字段。</li><li>保存后重新打开文件，能读取到相同的编辑内容。</li><li>保存不改变图片视觉内容，不无提示丢弃其他元数据。</li><li>不支持安全写入时提供明确错误提示，不覆盖原文件。</li></ol>
+<h2>9. 后续可扩展方向（非本期）</h2>
+<p>在基础元数据功能稳定后，再考虑 AI 自动生成标题、描述和关键词、批量标注、Apple Photos Caption 同步及个人知识库索引。第一版应保持足够简单，以验证元数据读写是否可靠为核心。</p>
+<p class="footer">本文为需求讨论稿，不代表已完成开发或验证各格式的写入兼容性。</p>
+</main></body></html>
